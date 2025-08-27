@@ -2,15 +2,13 @@
 FROM node:22 as build
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm ci --only=production=false
 COPY . .
 RUN npm run build
 
-# Production stage
-FROM node:22
-WORKDIR /app
-COPY --from=build /app/dist ./dist
-COPY server.js .
-RUN npm install express
+# Production stage - serve with nginx
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 8080
-CMD ["node", "server.js"]
+CMD ["nginx", "-g", "daemon off;"]
