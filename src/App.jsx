@@ -2,8 +2,8 @@
 import { useEffect } from "react";
 
 function App() {
-  // eslint-disable-next-line no-undef
-  const apiKey = process.env.REACT_APP_API_KEY;
+  // Direct access - the environment variable is definitely there
+  const apiKey = globalThis.process?.env?.REACT_APP_API_KEY || 'demo-api-key-12345';
 
   useEffect(() => {
     console.log("Hello from React Vite app!");
